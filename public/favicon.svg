@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- The map's strike marker: a red dot with a white edge inside a lighter red ring. -->
-  <circle cx="32" cy="32" r="27" fill="none" stroke="#e5909b" stroke-width="6"/>
+  <!-- The map's strike marker: a red dot with a white edge inside a red ring of the same color. -->
+  <circle cx="32" cy="32" r="27" fill="none" stroke="#c8102e" stroke-width="6"/>
   <circle cx="32" cy="32" r="15" fill="#c8102e" stroke="#ffffff" stroke-width="3"/>
 </svg>
