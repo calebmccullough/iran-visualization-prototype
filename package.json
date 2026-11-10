@@ -1,0 +1,35 @@
+{
+  "name": "iran-visual",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Embeddable, pannable and zoomable map of Iran and the surrounding region for news graphics.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build && node scripts/finish-build.mjs",
+    "typecheck": "tsc --noEmit",
+    "geodata": "node scripts/build-geodata.mjs"
+  },
+  "dependencies": {
+    "d3-geo": "^3.1.2",
+    "d3-selection": "^3.0.1",
+    "d3-transition": "^3.0.2",
+    "d3-zoom": "^3.0.1",
+    "topojson-client": "^3.1.0"
+  },
+  "devDependencies": {
+    "@types/d3-geo": "^3.1.1",
+    "@types/d3-selection": "^3.0.12",
+    "@types/d3-transition": "^3.0.9",
+    "@types/d3-zoom": "^3.0.9",
+    "@types/geojson": "^7946.0.16",
+    "@types/topojson-client": "^3.1.5",
+    "@types/topojson-specification": "^1.0.5",
+    "mapshaper": "^0.7.101",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7"
+  }
+}

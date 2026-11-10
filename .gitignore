@@ -1,0 +1,14 @@
+node_modules/
+dist/
+# Natural Earth downloads; rebuilt by `npm run geodata` (hashes are recorded in src/data/SOURCES.json)
+data/raw/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+.claude/
+.codex/
+
+# Research notes kept out of the public repo
+Trump-victory-iran-attacks.md

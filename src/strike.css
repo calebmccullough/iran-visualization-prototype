@@ -1,0 +1,71 @@
+/*
+ * Strike graphic, injected into the map's shadow root by story.ts.
+ * data-mode on .strike is none | site | attack; .is-hit is added when the arc
+ * reaches the base.
+ */
+
+.strike {
+  --strike: #b3261e;
+}
+
+.strike[data-mode='none'] {
+  display: none;
+}
+
+.strike[data-mode='site'] .strike-arc {
+  display: none;
+}
+
+.strike-segment {
+  fill: none;
+  stroke: var(--strike);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+/* The base before the attack: a neutral marker. */
+.strike-dot {
+  fill: var(--iran-map-text);
+  stroke: var(--iran-map-focus);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  transition: fill 0.3s ease;
+}
+
+.strike-ring {
+  fill: none;
+  stroke: var(--strike);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* The base once hit: red, with an expanding ring. */
+.strike.is-hit .strike-dot {
+  fill: var(--strike);
+}
+
+.strike.is-hit .strike-ring {
+  animation: strike-pulse 1.8s ease-out infinite;
+}
+
+@keyframes strike-pulse {
+  from {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(3.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strike.is-hit .strike-ring {
+    animation: none;
+    opacity: 0.6;
+    transform: scale(1.9);
+  }
+}

@@ -1,0 +1,283 @@
+/*
+ * Styles for the map. They are injected into the map's shadow root, so they
+ * apply only inside it.
+ *
+ * The --iran-map-* custom properties are the theming surface: custom properties
+ * inherit through the shadow boundary, so a page can override any of them on
+ * the host element, e.g. [data-iran-map] { --iran-map-water: #cfe; }.
+ *
+ * The basemap is deliberately quiet. The focus country is the lightest surface
+ * and everything else recedes, leaving the stronger colours for data.
+ */
+
+:host {
+  --iran-map-water: #d5e1e8;
+  --iran-map-land: #ebeae5;
+  --iran-map-focus: #fbfaf7;
+  --iran-map-coast: #a3b5c1;
+  --iran-map-border: #b3b0a8;
+  --iran-map-focus-border: #85817a;
+  --iran-map-text: #2f3237;
+  --iran-map-text-muted: #63676c;
+  --iran-map-text-water: #44627a;
+  --iran-map-control: #ffffff;
+  --iran-map-control-border: #c9c7c1;
+  --iran-map-accent: #1f5fa8;
+  --iran-map-font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  display: block;
+  position: relative;
+  width: 100%;
+  /* Used when the page gives the host no height of its own. */
+  aspect-ratio: 4 / 3;
+  min-height: 280px;
+}
+
+@media (max-width: 560px) {
+  :host {
+    aspect-ratio: 5 / 6;
+  }
+}
+
+.map {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--iran-map-water);
+  color: var(--iran-map-text);
+  font-family: var(--iran-map-font);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* One finger scrolls the page; two-finger gestures are handled in touch.ts. */
+  touch-action: pan-x pan-y;
+}
+
+.map.is-dragging {
+  cursor: grabbing;
+}
+
+/* Story-driven map: nothing to grab, and page scrolling passes straight through. */
+.map.is-static {
+  cursor: default;
+  touch-action: auto;
+}
+
+.map:focus-visible {
+  outline: 2px solid var(--iran-map-accent);
+  outline-offset: -2px;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---- Basemap ---------------------------------------------------------- */
+
+/* non-scaling-stroke keeps line widths in screen pixels at every zoom. */
+.view path {
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.land {
+  fill: var(--iran-map-land);
+  stroke: var(--iran-map-coast);
+  stroke-width: 0.75;
+}
+
+.focus {
+  fill: var(--iran-map-focus);
+}
+
+.focus,
+.focus-outline {
+  transition: opacity 0.6s ease;
+}
+
+.focus.is-off,
+.focus-outline.is-off {
+  opacity: 0;
+}
+
+.lakes {
+  fill: var(--iran-map-water);
+  stroke: var(--iran-map-coast);
+  stroke-width: 0.75;
+}
+
+.border {
+  fill: none;
+  stroke: var(--iran-map-border);
+  stroke-width: 0.85;
+}
+
+.border--disputed {
+  stroke-dasharray: 3 3;
+  stroke-linecap: butt;
+}
+
+.focus-outline {
+  fill: none;
+  stroke: var(--iran-map-focus-border);
+  stroke-width: 1.1;
+}
+
+/* ---- Labels ----------------------------------------------------------- */
+
+.label {
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.label.is-hidden {
+  opacity: 0;
+}
+
+/* A halo in the colour of the surface behind keeps text legible over lines. */
+.label text {
+  paint-order: stroke;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  stroke: color-mix(in srgb, var(--iran-map-land) 80%, transparent);
+  fill: var(--iran-map-text-muted);
+}
+
+.label--focus text {
+  fill: var(--iran-map-text);
+  stroke: color-mix(in srgb, var(--iran-map-focus) 80%, transparent);
+}
+
+.label--water text {
+  fill: var(--iran-map-text-water);
+  stroke: color-mix(in srgb, var(--iran-map-water) 70%, transparent);
+}
+
+.label--city text {
+  fill: var(--iran-map-text);
+}
+
+.label--site text {
+  fill: var(--iran-map-text);
+}
+
+.label--city circle {
+  fill: var(--iran-map-focus);
+  stroke: var(--iran-map-text);
+  stroke-width: 1.25;
+}
+
+/* ---- Controls --------------------------------------------------------- */
+
+.controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--iran-map-control-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--iran-map-control);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+
+.controls button {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--iran-map-text);
+  cursor: pointer;
+}
+
+.controls button + button {
+  border-top: 1px solid var(--iran-map-control-border);
+}
+
+.controls button:hover {
+  background: color-mix(in srgb, var(--iran-map-text) 8%, transparent);
+}
+
+.controls button:focus-visible {
+  outline: 2px solid var(--iran-map-accent);
+  outline-offset: -2px;
+}
+
+.controls svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Larger targets for fingers. */
+@media (pointer: coarse) {
+  .controls button {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(20 24 28 / 0.55);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.hint.is-visible {
+  opacity: 1;
+}
+
+.credit {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 2px 6px;
+  border-top-left-radius: 4px;
+  background: color-mix(in srgb, var(--iran-map-control) 75%, transparent);
+  color: var(--iran-map-text-muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label,
+  .focus,
+  .focus-outline,
+  .hint {
+    transition: none;
+  }
+}

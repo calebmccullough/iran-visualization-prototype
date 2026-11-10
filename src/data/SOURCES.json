@@ -1,0 +1,30 @@
+{
+  "source": "Natural Earth (public domain), https://www.naturalearthdata.com",
+  "repository": "https://github.com/nvkelso/natural-earth-vector",
+  "release": "v5.1.2",
+  "dataBbox": [
+    17,
+    6,
+    85,
+    49
+  ],
+  "simplify": "55%",
+  "files": {
+    "ne_10m_admin_0_countries": {
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_admin_0_countries.geojson",
+      "sha256": "239eec57ac17f100a11e2536cffc56752c318b50ae765b0918ff7aab4ce8f255"
+    },
+    "ne_10m_admin_0_boundary_lines_land": {
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_admin_0_boundary_lines_land.geojson",
+      "sha256": "74d9c16229c095fde65943a9919e337682f044bcebccb120764f38edf3b70f4a"
+    },
+    "ne_10m_lakes": {
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_lakes.geojson",
+      "sha256": "2d036f53dedec578001c5c30c2959ee7d4eebc1306900fa4367c49929ec8f2d9"
+    },
+    "ne_10m_populated_places_simple": {
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_populated_places_simple.geojson",
+      "sha256": "fd3fa867a320cbd5c5b6bb5bc550afeec2939fb2cef688e508007282a55ac42f"
+    }
+  }
+}

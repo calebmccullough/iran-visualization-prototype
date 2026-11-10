@@ -1,0 +1,403 @@
+/*
+ * Styles for the scrolling story (story.ts), injected into its shadow root.
+ *
+ * Sections, in order:
+ *   1. Tokens       PolitiFact's type and colors, as --story-* properties.
+ *   2. Layout       pinned stage, scrolling steps, wide/narrow card column.
+ *   3. Card basics  shared structure and type for every style.
+ *   4. Extras       card motion and the progress marker.
+ *   5. Cards        the Dispatch card design: borders, dateline strip, colors.
+ *
+ * Fonts: Public Sans and Merriweather are PolitiFact's own typefaces, so on its
+ * pages they are already loaded. Elsewhere the stacks fall back to system fonts
+ * (the preview pages load both from Google Fonts).
+ */
+
+/* ---- 1. Tokens ------------------------------------------------------- */
+
+:host {
+  --story-sans: 'Public Sans', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --story-serif: Merriweather, Georgia, 'Times New Roman', serif;
+  --story-ink: #1a1b1f;
+  --story-body: #414246;
+  --story-muted: #5b5e66;
+  --story-rule: #d9dce2;
+  --story-wash: #f3f5f8;
+  /* Darker than PolitiFact's #ff0040 so white text on it passes contrast. */
+  --story-red: #c8102e;
+  --story-link: #1a5fd8;
+
+  display: block;
+  position: relative;
+  color: var(--story-ink);
+}
+
+/* Opt-in: span the full window width even inside a narrow article column. */
+:host([data-full-bleed]) {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+/* ---- 2. Layout ------------------------------------------------------- */
+
+.story {
+  position: relative;
+}
+
+/* The pinned map. svh keeps it from jumping as mobile browser bars resize. */
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.map-host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  min-height: 0;
+}
+
+/* Fallback when sticky cannot work (see story.ts): the stage leaves the flow
+   and story.ts positions it, so the steps no longer need to pull up over it. */
+.story.is-js-pinned .stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.story.is-js-pinned .steps {
+  margin-top: 0;
+}
+
+/* Steps scroll over the stage, starting level with its top. */
+.steps {
+  position: relative;
+  margin-top: -100vh;
+  margin-top: -100svh;
+  pointer-events: none;
+  --column-left: 16px;
+  --column-width: min(520px, calc(100% - 32px));
+}
+
+.story.is-wide .steps {
+  --column-left: max(32px, 4%);
+  --column-width: min(420px, 40%);
+}
+
+.step {
+  box-sizing: border-box;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 0 0 0 var(--column-left);
+}
+
+/* The opening card sits a little way down, over the map. */
+.step--title {
+  padding-top: 12vh;
+  padding-top: 12svh;
+}
+
+.card {
+  box-sizing: border-box;
+  width: var(--column-width);
+  pointer-events: auto;
+}
+
+/* Narrow screens: centre the card column. */
+.story:not(.is-wide) .step {
+  padding-left: 0;
+}
+
+.story:not(.is-wide) .card {
+  margin: 0 auto;
+}
+
+/* ---- 3. Card basics -------------------------------------------------- */
+
+.card p {
+  margin: 0 0 0.8em;
+}
+
+.card-body > :last-child,
+.card > :last-child {
+  margin-bottom: 0;
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kicker,
+.tag,
+.eyebrow,
+.scroll-cue {
+  font-family: var(--story-sans);
+}
+
+.card-body {
+  font: 300 1rem/1.65 var(--story-serif);
+  color: var(--story-body);
+}
+
+.lead {
+  font: 400 0.9rem/1.55 var(--story-sans);
+  color: var(--story-muted);
+}
+
+blockquote {
+  margin: 0;
+  color: var(--story-ink);
+}
+
+.attribution {
+  margin-top: 0.9em;
+  font: 600 0.8rem/1.4 var(--story-sans);
+  color: var(--story-muted);
+}
+
+ul {
+  margin: 0 0 0.8em;
+  padding: 0.8em 0 0 1.1em;
+  border-top: 1px solid var(--story-rule);
+  font-size: 0.9em;
+}
+
+li + li {
+  margin-top: 0.4em;
+}
+
+.note,
+.sources {
+  font: 400 0.78rem/1.5 var(--story-sans);
+  color: var(--story-muted);
+}
+
+.sources a {
+  color: var(--story-link);
+}
+
+.headline {
+  margin: 0 0 0.4em;
+  font: 800 1.9rem/1.12 var(--story-sans);
+  color: var(--story-ink);
+}
+
+.dek {
+  font: 300 1.05rem/1.6 var(--story-serif);
+  color: var(--story-body);
+}
+
+.eyebrow {
+  margin-bottom: 0.7em;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scroll-cue {
+  margin-top: 1.2em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--story-muted);
+}
+
+.scroll-cue::after {
+  content: ' ↓';
+}
+
+.credits {
+  margin: 0;
+  padding: 8px 16px 16px;
+  font: 0.75rem/1.4 var(--story-sans);
+  color: var(--story-muted);
+}
+
+/* ---- 4. Extras ------------------------------------------------------- */
+
+/* Card motion: a card rises into place as it becomes the active step, and
+   recedes once the next one takes over. */
+.card {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+.step:not(.is-active) .card {
+  opacity: 0.4;
+  transform: translateY(14px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .step:not(.is-active) .card {
+    transform: none;
+  }
+}
+
+/* Progress marker: date ticks down the right edge of the stage. Claims are
+   open circles, attacks solid red diamonds. */
+.progress {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 12px;
+  list-style: none;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.82);
+  font: 600 0.7rem/1 var(--story-sans);
+  color: var(--story-muted);
+  pointer-events: none;
+}
+
+.tick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.tick.is-past,
+.tick.is-current {
+  opacity: 1;
+}
+
+.tick.is-current {
+  color: var(--story-ink);
+  font-weight: 800;
+}
+
+.tick-mark {
+  flex: none;
+  box-sizing: border-box;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--story-ink);
+  border-radius: 50%;
+}
+
+.tick--attack .tick-mark {
+  border: 0;
+  border-radius: 1px;
+  background: var(--story-red);
+  transform: rotate(45deg) scale(0.9);
+}
+
+.tick--claim.is-past .tick-mark,
+.tick--claim.is-current .tick-mark {
+  background: var(--story-ink);
+}
+
+.tick.is-current .tick-mark {
+  box-shadow: 0 0 0 3px rgb(26 27 31 / 0.15);
+}
+
+/* Phones: dots only, tucked into the top-right corner. */
+.story:not(.is-wide) .progress {
+  top: 12px;
+  right: 10px;
+  transform: none;
+  gap: 7px;
+  padding: 8px;
+}
+
+.story:not(.is-wide) .tick-label {
+  display: none;
+}
+
+/* ---- 5. Cards (Dispatch) ------------------------------------------- */
+/* Square corners, hairline rules, a dateline strip. Attacks get a red strip,
+   background cards a gray one. */
+
+.card {
+  border: 1px solid var(--story-ink);
+  background: #fff;
+  box-shadow: 4px 4px 0 rgb(26 27 31 / 0.14);
+}
+
+.card-head {
+  padding: 9px 16px 8px;
+  border-bottom: 1px solid var(--story-ink);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.tag {
+  font-weight: 600;
+  color: var(--story-muted);
+}
+
+.card-body {
+  padding: 16px 16px 18px;
+}
+
+blockquote {
+  font: 400 1.15rem/1.5 var(--story-serif);
+}
+
+.attribution {
+  padding-top: 0.7em;
+  border-top: 1px solid var(--story-rule);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.card--context .card-head {
+  background: var(--story-wash);
+}
+
+.card--attack {
+  border-color: var(--story-red);
+  box-shadow: 4px 4px 0 rgb(200 16 46 / 0.18);
+}
+
+.card--attack .card-head {
+  border-color: var(--story-red);
+  background: var(--story-red);
+  color: #fff;
+}
+
+.card--attack .tag {
+  color: #fff;
+}
+
+.card--attack .card-body > p:first-child {
+  font: 700 1.1rem/1.4 var(--story-sans);
+  color: var(--story-ink);
+}
+
+.card--title {
+  padding: 18px 18px 16px;
+  border-width: 1px 1px 6px;
+}
+
+.card--title .headline {
+  text-transform: uppercase;
+  font-size: 1.7rem;
+}
+
+.card--title .scroll-cue {
+  padding-top: 0.8em;
+  border-top: 1px solid var(--story-rule);
+}
